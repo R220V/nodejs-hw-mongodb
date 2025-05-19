@@ -20,3 +20,12 @@ $ npm install express --save
   ctrl + c //reset terminal
   
   % налаштування https://www.edu.goit.global/uk/learn/24589586/25871577/26491422/training?blockId=26491535
+
+$ npm install cors
+
+npm i pino-http --save
+
+npm i dotenv 
+import dotenv from "dotenv";
+
+npm i http-errors
