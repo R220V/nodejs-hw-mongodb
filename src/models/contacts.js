@@ -14,7 +14,7 @@
     type: String,
     required: false,
   },
-  isFavorite: {
+  isFavourite: {
     type: Boolean,
     required: true,
     default: false,
