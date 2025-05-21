@@ -10,6 +10,15 @@ export const setupServer = () => {
   
   const app = express();
 
+app.use(cors());
+app.use(express.json());
+app.use(pinoHttp({
+    transport: {
+      target: 'pino-pretty',
+    }
+  })
+);
+
   app.get('/', (req, res) => {
     res.json({
     message: 'Hello, My World!',
@@ -46,16 +55,6 @@ app.use((err, req, res, next) => {
     error: err.message,
   });
 });
-
-app.use(cors());
-app.use(express.json());
-app.use(pinoHttp({
-    transport: {
-      target: 'pino-pretty',
-    }
-  })
-);
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
