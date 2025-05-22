@@ -29,6 +29,7 @@ app.use(pinoHttp({
     const contacts = await getAllContacts();
 
     res.status(200).json({
+      status: 200,
       message: `Successfully found all contacts`, data: contacts,
     });
   });
@@ -39,11 +40,13 @@ app.use(pinoHttp({
     
 	if (!contact) {
 	  res.status(404).json({
+      status: 400,
 		  message: 'Contact not found'
 	  });
 	  return;
 	}
     res.status(200).json({
+      status: 200,
       message: `Successfully found contact with id ${contactId}!`,
       data: contact,
     });
@@ -51,6 +54,7 @@ app.use(pinoHttp({
 
 app.use((err, req, res, next) => {
   res.status(500).json({
+    status: 500,
     message: 'Something went wrong',
     error: err.message,
   });
