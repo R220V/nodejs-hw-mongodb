@@ -4,8 +4,8 @@ import {
 	helloRoute, 
 	getContactsController, 
 	getContactsByIdController, deleteContactsController, 
-	createContactController,
-	// updateContactController
+	createContactsController,
+	updateContactsController,
 } from '../controllers/contacts.js';
 
 
@@ -19,8 +19,8 @@ router.get('/contacts/:contactId', ctrlWrapper(getContactsByIdController));
 
 router.delete('/contacts/:contactId', ctrlWrapper(deleteContactsController));
 
-router.post('/contacts', ctrlWrapper(createContactController));
+router.post('/contacts', ctrlWrapper(createContactsController));
 
-// router.patch('contacts', ctrlWrapper(updateContactController));
+router.patch('/contacts/:contactId', ctrlWrapper(updateContactsController));
 
 export default router;

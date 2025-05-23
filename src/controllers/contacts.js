@@ -1,5 +1,5 @@
 
-import { getAllContacts, getContactById, deleteContactByid, createContact } from '../services/contacts.js';
+import { getAllContacts, getContactById, deleteContactByid, createContact, updateContact} from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
 export const helloRoute = (req, res) => {
@@ -53,7 +53,7 @@ export const getContactsController = async (req, res, next) => {
 	//	// res.status(204).end();
   }
 
-  export const  createContactController = async ( req, res) => {
+  export const  createContactsController = async ( req, res) => {
  const contact = await createContact(req.body);
 	 res.status(201).json({
     status: 201,
@@ -62,4 +62,17 @@ export const getContactsController = async (req, res, next) => {
   });
   };
 
-  
+  export const updateContactsController = async (req, res, next) =>{
+	const {contactId} = req.params;
+	const result = await updateContact(contactId, req.body);
+	 if (!result) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
+
+  res.json({
+    status: 200,
+    message: `Successfully updated a contact!`,
+    data: result,
+  });
+};
