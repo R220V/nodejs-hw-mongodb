@@ -1,4 +1,5 @@
-import { getAllContacts, getContactById } from '../services/contacts.js';
+
+import { getAllContacts, getContactById, deleteContactByid, createContact } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
 export const helloRoute = (req, res) => {
@@ -26,11 +27,7 @@ export const getContactsController = async (req, res, next) => {
     const contact = await getContactById(contactId);   
     
 	if (!contact) {
-	//   res.status(404).json({
-	// 	  message: 'Contact not found'
-	//   });
-	next(new Error('Contact not found'));
-	  return;
+    throw createHttpError('Contact not found');
 	}
     res.status(200).json({
 		status:200,
@@ -38,3 +35,31 @@ export const getContactsController = async (req, res, next) => {
       data: contact,
     });
   };
+
+  export const deleteContactsController = async (req, res) => {
+		const {contactId} = req.params;
+
+	const result= await deleteContactByid(contactId);
+
+	if (!contactId) {
+    throw new createHttpError.NotFound('fignya');
+  }
+		res
+		.status(200)
+		.json({
+			status: 200,
+			message: `Delete contacts with id ${contactId}`
+		})
+	//	// res.status(204).end();
+  }
+
+  export const  createContactController = async ( req, res) => {
+ const contact = await createContact(req.body);
+	 res.status(201).json({
+    status: 201,
+    message: `Successfully created a contact!`,
+    data: contact,
+  });
+  };
+
+  
