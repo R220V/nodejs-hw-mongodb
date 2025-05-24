@@ -1,5 +1,13 @@
 
-import { getAllContacts, getContactById, deleteContactByid, createContact, updateContact} from '../services/contacts.js';
+import { 
+	getAllContacts, 
+	getContactById, 
+	deleteContactByid, 
+	createContact, 
+	updateContact, 
+
+} from '../services/contacts.js';
+
 import createHttpError from 'http-errors';
 
 export const helloRoute = (req, res) => {
@@ -8,7 +16,7 @@ export const helloRoute = (req, res) => {
   });
 };
 
-
+//Get all
 export const getContactsController = async (req, res, next) => {
 	try {
 	const contacts = await getAllContacts();
@@ -21,7 +29,7 @@ export const getContactsController = async (req, res, next) => {
 	}
   };
 
-
+//GetId
   export const getContactsByIdController = async (req, res, next) => {
     const { contactId } = req.params;
     const contact = await getContactById(contactId);   
@@ -36,6 +44,7 @@ export const getContactsController = async (req, res, next) => {
     });
   };
 
+  //Delete
   export const deleteContactsController = async (req, res) => {
 		const {contactId} = req.params;
 
@@ -53,6 +62,7 @@ export const getContactsController = async (req, res, next) => {
 	//	// res.status(204).end();
   }
 
+  //Create
   export const  createContactsController = async ( req, res) => {
  const contact = await createContact(req.body);
 	 res.status(201).json({
@@ -62,6 +72,7 @@ export const getContactsController = async (req, res, next) => {
   });
   };
 
+  //Patch
   export const updateContactsController = async (req, res, next) =>{
 	const {contactId} = req.params;
 	const result = await updateContact(contactId, req.body);
@@ -76,3 +87,6 @@ export const getContactsController = async (req, res, next) => {
     data: result,
   });
 };
+
+
+//Put
