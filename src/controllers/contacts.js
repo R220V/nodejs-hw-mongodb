@@ -4,7 +4,8 @@ import {
 	getContactById, 
 	deleteContactByid, 
 	createContact, 
-	updateContact, 
+	updateContact,
+	upsertContact,
 
 } from '../services/contacts.js';
 
@@ -16,7 +17,7 @@ export const helloRoute = (req, res) => {
   });
 };
 
-//Get all
+//GET
 export const getContactsController = async (req, res, next) => {
 	try {
 	const contacts = await getAllContacts();
@@ -29,7 +30,7 @@ export const getContactsController = async (req, res, next) => {
 	}
   };
 
-//GetId
+//GETID
   export const getContactsByIdController = async (req, res, next) => {
     const { contactId } = req.params;
     const contact = await getContactById(contactId);   
@@ -44,7 +45,7 @@ export const getContactsController = async (req, res, next) => {
     });
   };
 
-  //Delete
+  //DELETE
   export const deleteContactsController = async (req, res) => {
 		const {contactId} = req.params;
 
@@ -59,10 +60,10 @@ export const getContactsController = async (req, res, next) => {
 			status: 200,
 			message: `Delete contacts with id ${contactId}`
 		})
-	//	// res.status(204).end();
+
   }
 
-  //Create
+  //POST
   export const  createContactsController = async ( req, res) => {
  const contact = await createContact(req.body);
 	 res.status(201).json({
@@ -72,7 +73,7 @@ export const getContactsController = async (req, res, next) => {
   });
   };
 
-  //Patch
+  //PATCH
   export const updateContactsController = async (req, res, next) =>{
 	const {contactId} = req.params;
 	const result = await updateContact(contactId, req.body);
@@ -89,4 +90,24 @@ export const getContactsController = async (req, res, next) => {
 };
 
 
-//Put
+//PUT
+export const upsertContactsController = async (req, res, next) => {
+  const { contactId } = req.params;
+
+  const result = await upsertContact(contactId, req.body, {
+    upsert: true,
+  });
+
+  if (!result) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
+
+  const status = result.isNew ? 201 : 200;
+
+  res.status(status).json({
+    status,
+    message: `Successfully upserted a contact!`,
+    data: result.contact,
+  });
+};
