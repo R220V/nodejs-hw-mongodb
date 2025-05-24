@@ -22,7 +22,7 @@ export const getContactsController = async (req, res, next) => {
 	try {
 	const contacts = await getAllContacts();
 	res.status(200).json({
-	  status:200,
+	  status: 200,
 	  message: `Successfully found all contacts`, data: contacts,
 	});
 	} catch (error) {
@@ -52,7 +52,7 @@ export const getContactsController = async (req, res, next) => {
 	const result= await deleteContactByid(contactId);
 
 	if (!contactId) {
-    throw new createHttpError.NotFound('fignya');
+    throw createHttpError('Contact not found');
   }
 		res
 		.status(200)
@@ -60,8 +60,8 @@ export const getContactsController = async (req, res, next) => {
 			status: 200,
 			message: `Delete contacts with id ${contactId}`
 		})
+	  };
 
-  }
 
   //POST
   export const  createContactsController = async ( req, res) => {
