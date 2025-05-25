@@ -46,22 +46,16 @@ export const getContactsController = async (req, res, next) => {
   };
 
   //DELETE
-  export const deleteContactsController = async (req, res) => {
-		const {contactId} = req.params;
+export const deleteContactsController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const contact = await deleteContactByid(contactId);
 
-	const result= await deleteContactByid(contactId);
-
-	if (!contactId) {
-    throw createHttpError('Contact not found');
+  if (!contact) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
   }
-		res
-		.status(200)
-		.json({
-			status: 200,
-			message: `Delete contacts with id ${contactId}`
-		})
-	  };
-
+  res.status(204).send();
+};
 
   //POST
   export const  createContactsController = async ( req, res) => {
