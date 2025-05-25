@@ -1,17 +1,11 @@
-Node.js MongoDB CRUD API - HW3
-This project is the third homework assignment for the Node.js course. It implements a full-featured REST API for managing a collection of contacts using MongoDB as the database.
+# Homework #4 — Node.js
 
-🚀 Features:
-Create a new contact
-Retrieve a list of all contacts
-Retrieve a single contact by ID
-Update an existing contact
-Delete a contact
-Error handling middleware
-🛠️ Technologies:
-Node.js — JavaScript runtime for server-side development
-Express.js — Web framework for building APIs and web applications
-MongoDB — NoSQL database
-Mongoose — ODM library for MongoDB
-dotenv — Manage environment variables
-Nodemon — Auto-restarts server during development
+This repository contains the fourth homework assignment for the Node.js course.  
+The focus is on implementing core data-handling techniques and ensuring input validation in a RESTful API context.
+
+## 🔧 Key Objectives
+
+- 🟢 **Pagination**: Efficiently manage large datasets using limit and offset in API responses.
+- 📊 **Sorting**: Enable dynamic sorting of results by specific fields to support advanced querying.
+- 🔍 **Filtering**: Apply query-based filtering to allow flexible and precise data access.
+- 🛡️ **Validation**: Ensure data integrity and security through robust input validation mechanisms.
