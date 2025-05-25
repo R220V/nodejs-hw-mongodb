@@ -1,22 +1,36 @@
-# Node.js course by GO.IT
 
-https://expressjs.com/
+Node.js MongoDB CRUD API - HW3
 
-npm init  //буде створений package.json з залежностями
-або  
-npm init -- yes 
+This project is the third homework assignment for the Node.js course. 
+It implements a full-featured REST API for managing a collection of contacts using MongoDB as the database.
 
-npm i express
 
-npm i nodemon -D
+🚀 Features:
 
-npm init @eslint/config@latest
+Create a new contact
 
-$ npm install express --save
+Retrieve a list of all contacts
 
-  "type":"module",
-    "dev": "nodemoon index.js",
-    "start": "node index.js"
-  ctrl + c //reset terminal
-  
-  % налаштування https://www.edu.goit.global/uk/learn/24589586/25871577/26491422/training?blockId=26491535
+Retrieve a single contact by ID
+
+Update an existing contact
+
+Delete a contact
+
+Error handling middleware
+
+
+🛠️ Technologies:
+
+Node.js — JavaScript runtime for server-side development
+
+Express.js — Web framework for building APIs and web applications
+
+MongoDB — NoSQL database
+
+Mongoose — ODM library for MongoDB
+
+dotenv — Manage environment variables
+
+Nodemon — Auto-restarts server during development
+
