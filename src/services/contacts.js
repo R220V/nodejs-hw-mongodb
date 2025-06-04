@@ -1,49 +1,63 @@
 import { ContactsCollection } from '../models/contacts.js';
 
 //GET
-export const getAllContacts = async ({page, perPage}) => {
-  const skip = page > 0 ? (page - 1) * perPage : 0;
+export const getAllContacts = async ({ page, perPage, sortBy, sortOrder }) => {
+    const skip = page > 0 ? (page - 1) * perPage : 0;
 
-ContactsCollection.countDocuments();
+    const [total, contacts] = await Promise.all([
+        ContactsCollection.countDocuments(),
+        ContactsCollection.find().sort({[sortBy]:sortOrder}).skip(skip).limit(perPage),
+    ]);
 
-  const contacts = await ContactsCollection.find().skip(skip).limit(perPage);
-  return contacts;
+    console.log({ total, contacts });
+
+    const totalPages = Math.ceil(total / perPage);
+
+    return {
+        contacts,
+        total,
+        page,
+        perPage,
+        total,
+        totalPages,
+        hasNextPage: totalPages > page,
+        hasPreviousPage: page > 1,
+    };
 };
 
 //GET_ID
 export const getContactById = async (contactId) => {
-  const contact = await ContactsCollection.findById(contactId);
-  return contact;
+    const contact = await ContactsCollection.findById(contactId);
+    return contact;
 };
 
 //DELETE
 export const deleteContactByid = async (contactId) => {
-  const contact = await ContactsCollection.findByIdAndDelete(contactId);
-  return contact;
+    const contact = await ContactsCollection.findByIdAndDelete(contactId);
+    return contact;
 };
 
 //POST
-export const createContact = async( payload) => {
-const contact = await ContactsCollection.create(payload);
-return contact;
+export const createContact = async (payload) => {
+    const contact = await ContactsCollection.create(payload);
+    return contact;
 };
 
 //PATCH
-export const updateContact = async(contactId, payload) => {
-  const contact = await ContactsCollection.findByIdAndUpdate(contactId, payload, {new: true});
-  return contact;
+export const updateContact = async (contactId, payload) => {
+    const contact = await ContactsCollection.findByIdAndUpdate(contactId, payload, { new: true });
+    return contact;
 };
 
-
 //PUT
-export const upsertContact = async(contactId, contact)=> {
-  const  result = await ContactsCollection.findByIdAndUpdate(contactId,         contact, {
-    new: true,
-    upsert: true,
-    includeResultMetadata: true,
-     });
-     return {
-      value: result.value,
-      updatedExisting: !result
-     }
+export const upsertContact = async (contactId, contact) => {
+    const result = await ContactsCollection.findByIdAndUpdate(contactId, contact, {
+        new: true,
+        upsert: true,
+        includeResultMetadata: true,
+    });
+    return {
+        value: result.value,
+        updatedExisting: !result,
+    };
 };
