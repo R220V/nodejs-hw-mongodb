@@ -9,7 +9,10 @@ import {
 
 } from '../services/contacts.js';
 
+import {parsePaginationParams} from '../utils/parsePaginationParams.js';
 import createHttpError from 'http-errors';
+
+
 
 export const helloRoute = (req, res) => {
 	res.json({
@@ -17,10 +20,14 @@ export const helloRoute = (req, res) => {
   });
 };
 
+
 //GET
 export const getContactsController = async (req, res, next) => {
-	try {
-	const contacts = await getAllContacts();
+  try {
+ const {page, perPage}= parsePaginationParams(req.query);
+ console.log({page,perPage});
+	
+	const contacts = await getAllContacts({page,perPage});
 	res.status(200).json({
 	  status: 200,
 	  message: `Successfully found all contacts`, data: contacts,
