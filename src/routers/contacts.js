@@ -11,7 +11,7 @@ import {
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { isValidID } from '../middlewares/isValidID.js';
-import { validateBody } from '../middlewares/ValidateBody.js';
+import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchema, updateContactSchema } from '../validation/contacts.js';
 
 const router = Router();
