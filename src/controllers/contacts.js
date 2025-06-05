@@ -9,30 +9,33 @@ import {
 
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 import createHttpError from 'http-errors';
+
 
 export const helloRoute = (req, res) => {
     res.json({
-        message: 'Hello, My World! Its CRUD',
+        message: 'Hello, My World! Its CRUD, and Pagination',
     });
 };
+
 
 //GET
 export const getContactsController = async (req, res, next) => {
     try {
         const { page, perPage } = parsePaginationParams(req.query);
+        const { sortBy, sortOrder } = parseSortParams(req.query);
+        const filter = parseFilterParams(req.query);
 
         console.log({ page, perPage });
+        console.log({ sortBy, sortOrder });
+        console.log(filter);
 
-        const { sortBy, sortOrder } = parseSortParams(req.query);
-
-        console.log({sortBy, sortOrder});
-
-        const contacts = await getAllContacts({ page, perPage, sortBy, sortOrder });
+        const contactsResult = await getAllContacts({ page, perPage, sortBy, sortOrder, filter });
         res.status(200).json({
             status: 200,
             message: `Successfully found all contacts`,
-            data: contacts,
+            data: contactsResult,
         });
     } catch (error) {
         next(error);

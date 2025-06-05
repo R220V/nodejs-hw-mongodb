@@ -1,5 +1,4 @@
 import Joi from "joi";
-//виправити
 
  //Post/Put 
  export const createContactSchema = Joi.object({

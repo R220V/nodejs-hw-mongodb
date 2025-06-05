@@ -10,7 +10,7 @@ function parseSortBy(value) {
     return value;
 }
 
-//фу-я для сортування по спаданню
+//фу-я для сортування по зростанню
 function parseSortOrder(value) {
     if (typeof value === 'undefined') {
         return 'asc';
