@@ -1,3 +1,4 @@
+my_readme.md 
 /node_modules
 .env
 
@@ -5,4 +6,3 @@
 .DS_Store
 .idea
 node_modules
-My read me.md
