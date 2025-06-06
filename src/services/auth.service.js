@@ -28,20 +28,43 @@ export async function loginUser(email, password) {
     if (isMatch !== true) {
         throw new createHttpError.Unauthorized('Email or password is incorrect');
     }
-//видалимо стару сесію
-    await Session.deleteOne({userId: user._id})
-
-    const accessToken = crypto.randomBytes(30).toString('base64');
-    const refreshToken = crypto.randomBytes(30).toString('base64');
+    //видалимо стару сесію
+    await Session.deleteOne({ userId: user._id });
 
     return Session.create({
         userId: user._id,
-        accessToken,
-        refreshToken,
+        accessToken: crypto.randomBytes(30).toString('base64'),
+        refreshToken:  crypto.randomBytes(30).toString('base64'),
         accessTokenValidUntil: new Date(Date.now() + 10 * 60 * 1000),
         refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 }
 export async function logoutUser(sessionId) {
     await Session.deleteOne({ _id: sessionId });
-};
+}
+
+export async function refreshSession(sessionId, refreshToken) {
+    const session = await Session.findOne({ _id: sessionId });
+    if (session === null) {
+        throw new createHttpError.Unauthorized('Session not found');
+    }
+
+    if (session.refreshToken !== refreshToken) {
+        throw new createHttpError.Unauthorized('Refresh token is not valid');
+    }
+
+    if (session.refreshTokenValidUntil < new Date()) {
+        throw new createHttpError.Unauthorized('Refresh token is expired');
+    }
+
+    //видалимо стару сесію
+    await Session.deleteOne({ _id: session._id });
+
+    return Session.create({
+        userId: session._id,
+        accessToken: crypto.randomBytes(30).toString('base64'),
+        refreshToken: crypto.randomBytes(30).toString('base64'),
+        accessTokenValidUntil: new Date(Date.now() + 10 * 60 * 1000),
+        refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+}
