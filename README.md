@@ -1,17 +1,16 @@
+Homework #5 — Auth
+This repository contains the fifth homework assignment for the Node.js course.
 
-Homework #4 — Node.js
-
-This repository contains the fourth homework assignment for the Node.js course.
-
-The focus is on implementing core data-handling techniques 
-and ensuring input validation in a RESTful API context.
+The focus is on implementing user authentication and authorization mechanisms using modern web security practices.
 
 🔧 Key Objectives
 
-🟢 Pagination: Efficiently manage large datasets using limit and offset in API responses.
+🔐 Authentication: Implement user registration and login using password hashing with bcrypt.
 
-📊 Sorting: Enable dynamic sorting of results by specific fields to support advanced querying.
+🛡️ Sessions & Tokens: Use sessions and JWT tokens to maintain secure user sessions.
 
-🔍 Filtering: Apply query-based filtering to allow flexible and precise data access.
+⚙️ Middleware: Create reusable authentication middleware to protect routes.
 
-🛡️ Validation: Ensure data integrity and security through robust input validation mechanisms. 
+🍪 Cookies: Store and transmit authentication tokens securely using HTTP cookies.
+
+🚫 Access Control: Restrict access to resources based on user roles or conditions.

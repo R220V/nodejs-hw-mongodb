@@ -5,6 +5,7 @@ import { getEnvVar } from './utils/getEnvVar.js';
 import contactsRouter from './routers/contacts.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import authRouter from './routers/auth.js';
 
 const PORT =  Number(getEnvVar('PORT', '3000'));
 
@@ -22,6 +23,8 @@ app.use(pinoHttp({
     }
   })
 );
+
+app.use('/auth', authRouter);
 
 app.use(contactsRouter); 
 
