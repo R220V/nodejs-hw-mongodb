@@ -1,4 +1,4 @@
-import { registerUser, loginUser } from '../services/auth.service.js';
+import { registerUser, loginUser, logoutUser } from '../services/auth.service.js';
 
 export async function registerController(req, res) {
     const user = await registerUser(req.body);
@@ -9,7 +9,17 @@ export async function registerController(req, res) {
 export async function loginController(req, res) {
     const session = await loginUser(req.body.email, req.body.password);
 
-console.log(session);
+    console.log(session);
+
+    res.cookie('sessionId', session._id, {
+        httpOnly: true,
+        expire: session.refreshTokenValidUntil,
+    });
+
+    res.cookie('refreshToken', session.refreshToken, {
+        httpOnly: true,
+        expire: session.refreshTokenValidUntil,
+    });
 
     res.json({
         status: 200,
@@ -17,5 +27,17 @@ console.log(session);
         data: {
             accessToken: session.accessToken,
         },
-    })
-};
+    });
+}
+
+export async function logoutController(req, res) {
+    const { sessionId } = req.cookies;
+if (typeof sessionId === 'string')
+    await logoutUser(sessionId);
+
+//почистимо кукі перед закінченням сесії
+    res.clearCookie("sessionId");
+    res.clearCookie("refreshToken");
+    
+    res.status (204).end();
+}

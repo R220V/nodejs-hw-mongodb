@@ -5,6 +5,7 @@ import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   registerController,
   loginController,
+  logoutController
 } from '../controllers/auth.controller.js';
 
 const router = express.Router();
@@ -22,6 +23,10 @@ router.post(
   jsonParser,
   validateBody(loginSchema),
   ctrlWrapper(loginController),
+);
+
+router.post(
+  '/logout', ctrlWrapper(logoutController),
 );
 
 export default router;
