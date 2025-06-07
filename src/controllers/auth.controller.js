@@ -1,4 +1,4 @@
-import { ContactsCollection } from '../models/contacts.js';
+
 import { registerUser, loginUser, logoutUser, refreshSession } from '../services/auth.service.js';
 
 export async function registerController(req, res) {
