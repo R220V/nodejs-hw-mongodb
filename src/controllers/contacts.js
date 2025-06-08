@@ -15,23 +15,30 @@ import createHttpError from 'http-errors';
 
 export const helloRoute = (req, res) => {
     res.json({
-        message: 'Hello, My World! Its CRUD, and Pagination',
+        message: 'Hello, My World! Its CRUD, Pagination and Auth'
     });
 };
 
 
 //GET
 export const getContactsController = async (req, res, next) => {
+
+    console.log(req.user);
+
     try {
         const { page, perPage } = parsePaginationParams(req.query);
+        // console.log({ page, perPage });
+
         const { sortBy, sortOrder } = parseSortParams(req.query);
+        // console.log({ sortBy, sortOrder });
+
         const filter = parseFilterParams(req.query);
+        // console.log(filter);
 
-        console.log({ page, perPage });
-        console.log({ sortBy, sortOrder });
-        console.log(filter);
 
-        const contactsResult = await getAllContacts({ page, perPage, sortBy, sortOrder, filter });
+        const contactsResult = await getAllContacts({ page, perPage, sortBy, sortOrder, filter, userId: req.user.id });
+
+
         res.status(200).json({
             status: 200,
             message: `Successfully found all contacts`,
@@ -76,7 +83,7 @@ export const deleteContactsController = async (req, res, next) => {
 
 //POST
 export const createContactsController = async (req, res) => {
-    const contact = await createContact(req.body);
+    const contact = await createContact({ ...req.body, userId: req.user.id });
     res.status(201).json({
         status: 201,
         message: `Successfully created a contact!`,

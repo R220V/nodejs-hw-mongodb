@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-hw-mongodb",
+  "name": "hw5-auth",
   "version": "1.0.0",
   "description": "https://expressjs.com/",
   "type": "module",
@@ -9,6 +9,8 @@
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
