@@ -1,21 +1,22 @@
-import crypto from 'node:crypto';
-import bcrypt from 'bcrypt';
-import createHttpError from 'http-errors';
+import crypto from 'node:crypto';//для генерації токенів
+import bcrypt from 'bcrypt';//для хешування паролів
+import createHttpError from 'http-errors';//створення HTTP помилок
 import { User } from '../models/user.model.js';
 import { Session } from '../models/session.model.js';
 
+//реєстрація корист.
 export async function registerUser(payload) {
     const user = await User.findOne({ email: payload.email });
     //помилка 409
     if (user !== null) {
-        throw new createHttpError.Conflict('Email is already in use');
+        throw new createHttpError.Conflict('Email in use');
     }
     //хешуємо пароль в бд
     payload.password = await bcrypt.hash(payload.password, 10);
 
     return User.create(payload);
 }
-//логіка для логіна
+// логін користувача
 export async function loginUser(email, password) {
     const user = await User.findOne({ email });
     //помилка 401
@@ -30,19 +31,20 @@ export async function loginUser(email, password) {
     }
     //видалимо стару сесію
     await Session.deleteOne({ userId: user._id });
-
+    //створимо нову з новими токенами
     return Session.create({
         userId: user._id,
         accessToken: crypto.randomBytes(30).toString('base64'),
         refreshToken: crypto.randomBytes(30).toString('base64'),
-        accessTokenValidUntil: new Date(Date.now() + 10 * 60 * 1000),
-        refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+        refreshTokenValidUntil: new Date(Date.now() + 30 * 60 * 60 * 1000),
     });
 }
+//вихід користувача
 export async function logoutUser(sessionId) {
     await Session.deleteOne({ _id: sessionId });
 }
-
+//оновлення сесії(новий access та refresh токен))
 export async function refreshSession(sessionId, refreshToken) {
     const session = await Session.findOne({ _id: sessionId });
     if (session === null) {
@@ -61,10 +63,10 @@ export async function refreshSession(sessionId, refreshToken) {
     await Session.deleteOne({ _id: session._id });
 
     return Session.create({
-        userId: session._id,
+        userId: session.userId,
         accessToken: crypto.randomBytes(30).toString('base64'),
         refreshToken: crypto.randomBytes(30).toString('base64'),
-        accessTokenValidUntil: new Date(Date.now() + 10 * 60 * 1000),
-        refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+        refreshTokenValidUntil: new Date(Date.now() + 30 * 60 * 60 * 1000),
     });
 }

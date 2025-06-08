@@ -7,6 +7,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import authRouter from './routers/auth.js';
 import cookieParser from 'cookie-parser';
+import { authenticate } from './middlewares/authenticate.js';
 
 const PORT =  Number(getEnvVar('PORT', '3000'));
 
@@ -28,6 +29,8 @@ app.use(pinoHttp({
 );
 
 app.use('/auth', authRouter);
+
+app.use('/', authenticate, contactsRouter);
 
 app.use(contactsRouter); 
 

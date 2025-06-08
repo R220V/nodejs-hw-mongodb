@@ -1,10 +1,11 @@
 import { ContactsCollection } from '../models/contacts.js';
 
 //GET
-export const getAllContacts = async ({ page, perPage, sortBy, sortOrder, filter }) => {
+export const getAllContacts = async ({ page, perPage, sortBy, sortOrder, filter, userId }) => {
     const skip = page > 0 ? (page - 1) * perPage : 0;
 
-const contactsQuery = ContactsCollection.find(filter)
+const fullFilter = { ...filter, userId };
+const contactsQuery = ContactsCollection.find(fullFilter);
 
 
     const [totalItems, data] = await Promise.all([
