@@ -15,7 +15,7 @@ import createHttpError from 'http-errors';
 
 export const helloRoute = (req, res) => {
     res.json({
-        message: 'Hello, My World! Its CRUD, and Pagination',
+        message: 'Hello, My World! Its CRUD, Pagination and Auth'
     });
 };
 

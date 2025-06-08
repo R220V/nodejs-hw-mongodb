@@ -16,8 +16,7 @@ router.post(
   '/register',
   jsonParser,
   validateBody(registerSchema),
-  ctrlWrapper(registerController),
-);
+  ctrlWrapper(registerController));
 
 router.post(
   '/login',

@@ -5,7 +5,7 @@ import contactsRoutes from './contacts.js';
 
 const router = express.Router();
 
-// router.use('/auth', authRoutes);
-// router.use('/contacts', authenticate, contactsRoutes);
+router.use('/auth', authRoutes);
+router.use('/', authenticate, contactsRoutes);
 
 export default router;

@@ -32,8 +32,6 @@ app.use('/auth', authRouter);
 
 app.use('/', authenticate, contactsRouter);
 
-app.use(contactsRouter); 
-
 app.use(notFoundHandler);
 
 app.use(errorHandler);
