@@ -53,7 +53,7 @@ export const getContactsController = async (req, res, next) => {
 export const getContactsByIdController = async (req, res, next) => {
     try {
         const { contactId } = req.params;
-        const contact = await getContactById(contactId);
+        const contact = await getContactById(contactId, req.user.id);
 
         if (!contact) {
             throw createHttpError(404, 'Contact not found');
@@ -72,7 +72,7 @@ export const getContactsByIdController = async (req, res, next) => {
 //DELETE
 export const deleteContactsController = async (req, res, next) => {
     const { contactId } = req.params;
-    const contact = await deleteContactByid(contactId);
+    const contact = await deleteContactByid(contactId, req.user.id);
 
     if (!contact) {
         next(createHttpError(404, 'Contact not found'));
@@ -94,7 +94,7 @@ export const createContactsController = async (req, res) => {
 //PATCH
 export const updateContactsController = async (req, res, next) => {
     const { contactId } = req.params;
-    const result = await updateContact(contactId, req.body);
+    const result = await updateContact(contactId, req.body, req.user.id);
     if (!result) {
         next(createHttpError(404, 'Contact not found'));
         return;
@@ -109,22 +109,21 @@ export const updateContactsController = async (req, res, next) => {
 
 //PUT
 export const upsertContactsController = async (req, res, next) => {
+  try {
     const { contactId } = req.params;
-
-    const result = await upsertContact(contactId, req.body, {
-        upsert: true,
-    });
+    const result = await upsertContact(contactId, req.body, req.user.id);
 
     if (!result) {
-        next(createHttpError(404, 'Contact not found'));
-        return;
+      next(createHttpError(404, 'Contact not found'));
+      return;
     }
 
-    const status = result.isNew ? 201 : 200;
-
-    res.status(status).json({
-        status,
-        message: `Successfully upserted a contact!`,
-        data: result.contact,
+    res.status(result.updatedExisting ? 200 : 201).json({
+      status: result.updatedExisting ? 200 : 201,
+      message: `Successfully upserted a contact!`,
+      data: result.value,
     });
+  } catch (error) {
+    next(error);
+  }
 };
