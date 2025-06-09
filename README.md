@@ -1,16 +1,11 @@
-Homework #5 — Auth
-This repository contains the fifth homework assignment for the Node.js course.
-
-The focus is on implementing user authentication and authorization mechanisms using modern web security practices.
+Homework #6 — email-and-images
 
 🔧 Key Objectives
 
-🔐 Authentication: Implement user registration and login using password hashing with bcrypt.
+🔁 Password Reset: Implement password reset functionality using secure tokens.
 
-🛡️ Sessions & Tokens: Use sessions and JWT tokens to maintain secure user sessions.
+📧 Email Service: Use the Brevo service to send email notifications.
 
-⚙️ Middleware: Create reusable authentication middleware to protect routes.
+🌤️ Image Uploads: Integrate image uploading with the Cloudinary service.
 
-🍪 Cookies: Store and transmit authentication tokens securely using HTTP cookies.
-
-🚫 Access Control: Restrict access to resources based on user roles or conditions.
+🧩 Model & API Expansion: Extend models and endpoints to support new features.

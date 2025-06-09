@@ -9,7 +9,7 @@ const contactsQuery = ContactsCollection.find(fullFilter);
 
 
     const [totalItems, data] = await Promise.all([
-        ContactsCollection.countDocuments(filter),
+        ContactsCollection.countDocuments(fullFilter),
         contactsQuery.sort({[sortBy]:sortOrder}).skip(skip).limit(perPage),
     ]);
 
@@ -29,14 +29,14 @@ const contactsQuery = ContactsCollection.find(fullFilter);
   };
 
 //GET_ID
-export const getContactById = async (contactId) => {
-    const contact = await ContactsCollection.findById(contactId);
+export const getContactById = async (contactId,userId) => {
+    const contact = await ContactsCollection.findOne({_id: contactId, userId});
     return contact;
 };
 
 //DELETE
-export const deleteContactByid = async (contactId) => {
-    const contact = await ContactsCollection.findByIdAndDelete(contactId);
+export const deleteContactByid = async (contactId, userId) => {
+    const contact = await ContactsCollection.findOneAndDelete({_id: contactId, userId});
     return contact;
 };
 
@@ -47,17 +47,19 @@ export const createContact = async (payload) => {
 };
 
 //PATCH
-export const updateContact = async (contactId, payload) => {
-    const contact = await ContactsCollection.findByIdAndUpdate(contactId, payload, { new: true });
+export const updateContact = async (contactId, payload, userId) => {
+    const contact = await ContactsCollection.findOneAndUpdate({_id: contactId, userId}, payload, { new: true });
     return contact;
 };
 
 //PUT
-export const upsertContact = async (contactId, contact) => {
-    const result = await ContactsCollection.findByIdAndUpdate(contactId, contact, {
-        new: true,
-        upsert: true,
-        includeResultMetadata: true,
+export const upsertContact = async (contactId, contact, userId) => {
+    const result = await ContactsCollection.findOneAndUpdate ( { _id: contactId, userId },
+        contact,
+        {
+            new: true,
+            upsert: true,
+        // includeResultMetadata: true,
     });
     return {
         value: result.value,
