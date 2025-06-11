@@ -1,8 +1,18 @@
-import crypto from 'node:crypto';//для генерації токенів
-import bcrypt from 'bcrypt';//для хешування паролів
-import createHttpError from 'http-errors';//створення HTTP помилок
+import * as fs from 'node:fs'; //модуль для роботи з файловою си-ою
+import path from 'node:path';
+import Handlebars from 'handlebars';
+import jwt from 'jsonwebtoken';
+import crypto from 'node:crypto'; //для генерації токенів
+import bcrypt from 'bcrypt'; //для хешування паролів
+import createHttpError from 'http-errors'; //створення HTTP помилок
+
 import { User } from '../models/user.model.js';
 import { Session } from '../models/session.model.js';
+import { sendMail } from '../utils/sendMail.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+
+const RESET_PASSWORD_TEMPLATE = fs.readFileSync(path.resolve('src', 'templates', 'reset-password.hbs'), 'UTF-8');
+// console.log(RESET_PASSWORD_TEMPLATE);
 
 //реєстрація корист.
 export async function registerUser(payload) {
@@ -70,3 +80,30 @@ export async function refreshSession(sessionId, refreshToken) {
         refreshTokenValidUntil: new Date(Date.now() + 30 * 60 * 60 * 1000),
     });
 }
+//зробимо запит по емейлу для скидання паролю
+export async function requestResetPassword(email) {
+    const user = await User.findOne({ email });
+    if (user === null) {
+        throw new createHttpError.NotFound('User not found');
+    }
+    //передамо токен на фронтенд
+    const token = jwt.sign(
+        {
+            sub: user._id,
+            name: user.name,
+        },
+        getEnvVar('JWT_SECRET'),
+        {
+            expiresIn: '15m',
+        },
+    );
+    const templateboo = Handlebars.compile(RESET_PASSWORD_TEMPLATE);
+    //отримаємо лист по шаблону
+    await sendMail(
+        user.email,
+        'Reset password',
+        templateboo({ link: `http://localhost:7000/reset-password/?token=${token}` }),
+        //    `<p>To reset password, please follow this <a href=""> link </a> </p>`);
+    );
+}
+

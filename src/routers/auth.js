@@ -1,33 +1,39 @@
 import express from 'express';
 import { validateBody } from '../middlewares/validateBody.js';
-import { registerSchema, loginSchema } from '../validation/auth.js';
+import { 
+    registerSchema,
+    loginSchema, 
+    requestResetPasswordSchema, 
+    resetPasswordSchema } from '../validation/auth.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
-  registerController,
-  loginController,
-  logoutController,
-  refreshController
+    registerController,
+    loginController,
+    logoutController,
+    refreshController,
+    requestResetPasswordController,
+    resetPasswordController,
 } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 const jsonParser = express.json();
 
-router.post(
-  '/register',
-  jsonParser,
-  validateBody(registerSchema),
-  ctrlWrapper(registerController));
+router.post('/register', jsonParser, validateBody(registerSchema), ctrlWrapper(registerController));
+
+router.post('/login', jsonParser, validateBody(loginSchema), ctrlWrapper(loginController));
+
+router.post('/logout', ctrlWrapper(logoutController));
+
+router.post('/refresh', ctrlWrapper(refreshController));
 
 router.post(
-  '/login',
-  jsonParser,
-  validateBody(loginSchema),
-  ctrlWrapper(loginController));
+    '/request-reset-password',
+    jsonParser,
+    validateBody(requestResetPasswordSchema),
+    ctrlWrapper(requestResetPasswordController),
+);
 
-router.post(
-  '/logout', ctrlWrapper(logoutController));
-
-router.post(
-  '/refresh', ctrlWrapper(refreshController));
+//скинемо пароль
+router.post('/reset-password', jsonParser, validateBody(resetPasswordSchema), ctrlWrapper(resetPasswordController));
 
 export default router;
