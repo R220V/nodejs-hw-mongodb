@@ -1,8 +1,9 @@
 my_readme.md 
 /node_modules
 .env
-
-.vscode
+.
+/src/tmp/*
+!/src/tmp/.gitkeep
 .DS_Store
 .idea
 node_modules
