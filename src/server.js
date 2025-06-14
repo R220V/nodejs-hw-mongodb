@@ -1,3 +1,4 @@
+import path from 'node:path';
 import pinoHttp from 'pino-http';
 import express from 'express';
 import cors from 'cors';
@@ -14,6 +15,8 @@ const PORT =  Number(getEnvVar('PORT', '3000'));
 export const setupServer = () => {
   
 const app = express();
+//віддамо на фронт аватарку
+app.use("/avatars", express.static(path.resolve("src","uploads","avatars")));
 
 app.use(express.json());
 
