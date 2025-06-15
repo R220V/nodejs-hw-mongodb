@@ -27,13 +27,13 @@ export async function authenticate(req, res, next) {
   }
 //перевіримо, чи токен закінчився
   if (session.accessTokenValidUntil < new Date()) {
-    return next(new createHttpError.Unauthorized('Access token expired'));
+    return next(new createHttpError.Unauthorized("Token is expired or invalid."));
   }
 //перевіримо, чи цьому юзеру належить сесія по ID
   const user = await User.findOne({ _id: session.userId });
 
   if (user === null) {
-    return next(new createHttpError.Unauthorized('User not found'));
+    return next(new createHttpError.NotFound('User not found'));
   }
 
   req.user = { id: user._id, name: user.name };
