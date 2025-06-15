@@ -59,7 +59,6 @@ export const upsertContact = async (contactId, contact, userId) => {
         {
             new: true,
             upsert: true,
-        // includeResultMetadata: true,
     });
     return {
         value: result.value,

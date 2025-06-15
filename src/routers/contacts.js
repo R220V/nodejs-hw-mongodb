@@ -1,3 +1,6 @@
+
+
+
 import {
     helloRoute,
     getContactsController,
@@ -25,10 +28,10 @@ router.get('/contacts/:contactId', isValidID, ctrlWrapper(getContactsByIdControl
 
 router.delete('/contacts/:contactId', isValidID, ctrlWrapper(deleteContactsController));
 
-router.post('/contacts', upload.single("avatarBoo"), validateBody(createContactSchema), ctrlWrapper(createContactsController));
+router.post('/contacts', upload.single('photo'), validateBody(createContactSchema), ctrlWrapper(createContactsController));
 
 router.patch(
-    '/contacts/:contactId',
+    '/contacts/:contactId', upload.single('photo'),
     validateBody(updateContactSchema),
     isValidID,
     ctrlWrapper(updateContactsController),

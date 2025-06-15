@@ -2,14 +2,7 @@ import * as fs from 'node:fs/promises';
 import path from 'node:path';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import { uploadToCloudinary } from '../utils/uploadToCloudinary.js';
-import {
-    getAllContacts,
-    getContactById,
-    deleteContactByid,
-    createContact,
-    updateContact,
-    upsertContact,
-} from '../services/contacts.js';
+import { getAllContacts, getContactById, deleteContactByid, createContact, updateContact, upsertContact } from '../services/contacts.js';
 
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
@@ -18,7 +11,7 @@ import createHttpError from 'http-errors';
 
 export const helloRoute = (req, res) => {
     res.json({
-        message: 'Hello, My World! Its CRUD, Pagination and Auth',
+        message: 'Hello, My World! Its CRUD, Pagination, Auth, email and images!',
     });
 };
 
@@ -81,60 +74,95 @@ export const deleteContactsController = async (req, res, next) => {
 };
 
 //POST/create
-export const createContactsController = async (req, res) => {
-    //for cloud
-    let avatarBoo = null;
-    //якщо завантажуємо картинку в хмару
-    if (getEnvVar('UPLOAD_TO_CLOUDINARY') === 'true') {
-        const result = await uploadToCloudinary(req.file.path);
-        //видалим нашу картинку, а рез-т запишемо в змінну аватарсС
-        await fs.unlink(req.file.path);
+export const createContactsController = async (req, res, next) => {
+    try {
+  const APP_DOMAIN = getEnvVar('APP_DOMAIN');
 
-        avatarBoo = result.secure_url;
-    } else {
-        //for local
-        //   інакше змінимо шлях завантаження фото з tmp в папку avatars:
-        await fs.rename(req.file.path, path.resolve('src', 'uploads', 'avatars', req.file.filename));
+        console.log('req.file:', req.file);
+        console.log('req.body:', req.body);
 
-        avatarBoo = `http://localhost:7000/avatars/${req.file.filename}`;
+        //for cloud
+        let photo = null;
+
+if (req.file) {      
+        //якщо завантажуємо картинку в хмару
+        if (getEnvVar('UPLOAD_TO_CLOUDINARY') === 'true') {
+            const result = await uploadToCloudinary(req.file.path);
+            //видалим нашу картинку, а рез-т запишемо в змінну фото
+            await fs.unlink(req.file.path);
+
+            photo = result.secure_url;
+        } else {
+            //for local
+          //інакше змінимо шлях завантаження фото з tmp в папку фото:
+            await fs.rename(req.file.path, path.resolve('src', 'uploads', 'photo', req.file.filename));
+
+            photo = `${APP_DOMAIN}/photo/${req.file.filename}`;
+        }};
+        const contact = await createContact({
+            ...req.body,
+            userId: req.user.id,
+            photo,
+        });
+
+        res.status(201).json({
+            status: 201,
+            message: `Successfully created a contact!`,
+            data: contact,
+        });
+    } catch (error) {
+        console.error('Error in createContactsController:', error);
+        next(error);
     }
-    const contact = await createContact({
-        ...req.body,
-        userId: req.user.id,
-        avatarBoo,
-    });
-
-    res.status(201).json({
-        status: 201,
-        message: `Successfully created a contact!`,
-        data: contact,
-    });
 };
-//POST
-// export const createContactsController = async (req, res) => {
-//     const contact = await createContact({ ...req.body, userId: req.user.id });
-//     res.status(201).json({
-//         status: 201,
-//         message: `Successfully created a contact!`,
-//         data: contact,
-//     });
-// };
 
 //PATCH
 export const updateContactsController = async (req, res, next) => {
-    const { contactId } = req.params;
-    const result = await updateContact(contactId, req.body, req.user.id);
-    if (!result) {
-        next(createHttpError(404, 'Contact not found'));
-        return;
-    }
+    try {
+        const { contactId } = req.params;
+        let photo = null;
 
-    res.json({
-        status: 200,
-        message: `Successfully updated a contact!`,
-        data: result,
-    });
+        if (req.file) {
+            const APP_DOMAIN = getEnvVar('APP_DOMAIN');
+
+            if (getEnvVar('UPLOAD_TO_CLOUDINARY') === 'true') {
+                // Завантажуєм нове фото в Cloud
+                const result = await uploadToCloudinary(req.file.path);
+                // Видаляєм тимчасовий файл
+                await fs.unlink(req.file.path);
+
+                photo = result.secure_url;
+
+            } else {
+                // Локальне збереження
+                await fs.rename(req.file.path, path.resolve('src', 'uploads', 'photo', req.file.filename));
+                photo = `${APP_DOMAIN}/photo/${req.file.filename}`;
+            }
+        }
+
+        // Формуємо оновлені дані
+        const updatedData = {
+            ...req.body,
+            ...(photo && { photo }), //якщо є нове фото-оновимо
+        };
+
+        const result = await updateContact(contactId, updatedData, req.user.id);
+
+        if (!result) {
+            next(createHttpError(404, 'Contact not found'));
+            return;
+        }
+
+        res.json({
+            status: 200,
+            message: `Successfully updated a contact!`,
+            data: result,
+        });
+    } catch (error) {
+        next(error);
+    }
 };
+
 
 //PUT
 export const upsertContactsController = async (req, res, next) => {

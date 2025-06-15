@@ -34,13 +34,13 @@ export async function loginUser(email, password) {
     const user = await User.findOne({ email });
     //помилка 401
     if (user === null) {
-        throw new createHttpError.Unauthorized('Email or password is incorrect');
+        throw new createHttpError.NotFound('User not found!');
     }
     //перевіряємо пароль з фронту
     const isMatch = await bcrypt.compare(password, user.password);
     //помилка 401
     if (isMatch !== true) {
-        throw new createHttpError.Unauthorized('Email or password is incorrect');
+        throw new createHttpError.NotFound ('User not found!');
     }
     //видалимо стару сесію
     await Session.deleteOne({ userId: user._id });
@@ -84,7 +84,7 @@ export async function refreshSession(sessionId, refreshToken) {
     });
 }
 //зробимо запит по емейлу для скидання паролю
-export async function requestResetPassword(email) {
+export async function sendResetEmail(email) {
     const user = await User.findOne({ email });
     if (user === null) {
         throw new createHttpError.NotFound('User not found');
@@ -97,20 +97,23 @@ export async function requestResetPassword(email) {
         },
         getEnvVar('JWT_SECRET'),
         {
-            expiresIn: '15m',
+            expiresIn: '5m',
         },
     );
+    const appDomain = getEnvVar('APP_DOMAIN'); 
+   
+    const resetLink = `${appDomain}/reset-password?token=${token}`;
+
     const templateboo = Handlebars.compile(RESET_PASSWORD_TEMPLATE);
     //отримаємо лист по шаблону
     await sendMail(
         user.email,
         'Reset password',
-        templateboo({ link: `http://localhost:7000/reset-password/?token=${token}` }),
-        //    `<p>To reset password, please follow this <a href=""> link </a> </p>`);
+          templateboo({ link: resetLink }),
     );
 }
 
-export async function resetPassword(password, token) {
+export async function resetPwd(password, token) {
     try {
         //знайшли користувача, перевірили токен
         const decoded = jwt.verify(token, getEnvVar('JWT_SECRET'));
@@ -125,10 +128,10 @@ export async function resetPassword(password, token) {
         await User.findByIdAndUpdate(user._id, { password: hashedPassword });
     } catch (error) {
         if (error.name === 'JsonTokenError') {
-            throw new createHttpError.Unauthorized('Token is unauthorized');
+            throw new createHttpError.Unauthorized('Token is expired or invalid');
         }
         if (error.name === 'TokenExpiredError') {
-            throw new createHttpError.Unauthorized('Token is expired');
+            throw new createHttpError.Unauthorized('Token is expired or invalid');
         }
         throw error;
     }

@@ -30,7 +30,7 @@ const contactsSchema = new Schema(
           type: mongoose.Schema.Types.ObjectId,
           required: true,
         },
-            avatarBoo:{
+            photo:{
                 type: String,
                 required: false,
                 default: null,

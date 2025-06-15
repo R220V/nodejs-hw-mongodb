@@ -9,8 +9,8 @@ return async (req, res, next) => {
 	
 	} catch (error) {
 		const errors = error.details.map(detail => detail.message);
-		next(createHttpError.BadRequest(errors))
-	console.error(error);
+			console.error(error);
+		next(createHttpError.BadRequest(errors.join(', ')))
 	};
 };
 };
