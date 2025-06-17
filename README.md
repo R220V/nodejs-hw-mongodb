@@ -1,11 +1,13 @@
-Homework #6 — email-and-images
+Homework #7 — API Documentation
 
 🔧 Key Objectives
 
-🔁 Password Reset: Implement password reset functionality using secure tokens.
+📘 Swagger Setup: Configure the basic setup for API documentation using Swagger.
 
-📧 Email Service: Use the Brevo service to send email notifications.
+🛠️ Redocly CLI: Use the @redocly/cli package to generate documentation.
 
-🌤️ Image Uploads: Integrate image uploading with the Cloudinary service.
+🗂️ API Organization: Configure and organize your API documentation effectively.
 
-🧩 Model & API Expansion: Extend models and endpoints to support new features.
+📌 Endpoint Docs: Add documentation for various API endpoints.
+
+💡 This assignment will help you create clear and informative API documentation, improving its readability and usability.

@@ -1,7 +1,15 @@
 import express from 'express';
 import { validateBody } from '../middlewares/validateBody.js';
-import { registerSchema, loginSchema, SendResetEmailSchema, resetPwdSchema } from '../validation/auth.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+
+import { 
+    registerSchema, 
+    loginSchema, 
+    SendResetEmailSchema, 
+    resetPwdSchema, 
+    confirmOAuthSchema 
+} from '../validation/auth.js';
+
 import {
     registerController,
     loginController,
@@ -9,6 +17,8 @@ import {
     refreshController,
     SendResetEmailController,
     resetPwdController,
+    getOAuthController,
+    confirmOAuthController
 } from '../controllers/auth.controller.js';
 
 const router = express.Router();
@@ -26,5 +36,14 @@ router.post('/send-reset-email', jsonParser, validateBody(SendResetEmailSchema),
 
 //скинемо пароль
 router.post('/reset-pwd', jsonParser, validateBody(resetPwdSchema), ctrlWrapper(resetPwdController));
+
+router.get('/get-oauth-url', ctrlWrapper(getOAuthController));
+
+router.post(
+  '/confirm-oauth',
+  jsonParser,
+  validateBody(confirmOAuthSchema),
+  ctrlWrapper(confirmOAuthController),
+);
 
 export default router;
