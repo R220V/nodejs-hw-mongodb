@@ -1,0 +1,21 @@
+type: object
+required:
+  - name
+  - email
+  - password
+properties:
+  name:
+    type: string
+    description: User's name
+    example: Duke Nuken
+  email:
+    type: string
+    description: User's email
+    format: email
+    example: example@gmail.com
+  password:
+    type: string
+    description: User's password
+    format: password
+    example: 123456
+    minLength: 6

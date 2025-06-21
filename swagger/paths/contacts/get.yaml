@@ -1,0 +1,63 @@
+tags:
+  - Contacts
+summary: Get all contacts
+operationId: getContacts
+description: Retrieve a list of all contacts
+security:
+  - bearerAuth: []
+parameters:
+  - name: page
+    in: query
+    description: Page number for pagination
+    required: false
+    schema:
+      type: integer
+      example: 1
+  - name: limit
+    in: query
+    description: Number of contacts per page
+    required: false
+    schema:
+      type: integer
+      example: 10
+  - name: isFavourite
+    in: query
+    description: Filter by favourite contacts
+    required: false
+    schema:
+      type: boolean
+      example: true
+  - name: contactType
+    in: query
+    description: Filter by contact type
+    required: false
+    schema:
+      type: string
+      enum: [work, home, personal]
+      example: work
+responses:
+  '200':
+    description: List of contacts
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found all contacts
+            data:
+              type: array
+              items:
+                $ref: '../../components/schemas/contact.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

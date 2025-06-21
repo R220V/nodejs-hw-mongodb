@@ -1,7 +1,7 @@
 import * as fs from 'node:fs'; //модуль для роботи з файловою си-ою
-import path from 'node:path';//для роботи з шляхами файлыв
-import Handlebars from 'handlebars';// шаблонізатор для HTML-листів
-import jwt from 'jsonwebtoken';// створення та перевірка JWT токенів
+import path from 'node:path'; //для роботи з шляхами файлыв
+import Handlebars from 'handlebars'; // шаблонізатор для HTML-листів
+import jwt from 'jsonwebtoken'; // створення та перевірка JWT токенів
 import crypto from 'node:crypto'; //для генерації токенів
 import bcrypt from 'bcrypt'; //для хешування паролів
 import createHttpError from 'http-errors'; //створення HTTP помилок
@@ -24,10 +24,9 @@ export async function registerUser(payload) {
     }
     //хешуємо пароль в бд
     payload.password = await bcrypt.hash(payload.password, 10);
-// створення користувача в БД
+    // створення користувача в БД
     return User.create(payload);
 }
-
 
 // логін користувача
 export async function loginUser(email, password) {
@@ -40,7 +39,7 @@ export async function loginUser(email, password) {
     const isMatch = await bcrypt.compare(password, user.password);
     //помилка 401
     if (isMatch !== true) {
-        throw new createHttpError.NotFound ('User not found!');
+        throw new createHttpError.NotFound('User not found!');
     }
     //видалимо стару сесію
     await Session.deleteOne({ userId: user._id });
@@ -100,17 +99,13 @@ export async function sendResetEmail(email) {
             expiresIn: '5m',
         },
     );
-    const appDomain = getEnvVar('APP_DOMAIN'); 
-   
+    const appDomain = getEnvVar('APP_DOMAIN');
+
     const resetLink = `${appDomain}/reset-password?token=${token}`;
 
     const templateboo = Handlebars.compile(RESET_PASSWORD_TEMPLATE);
     //отримаємо лист по шаблону
-    await sendMail(
-        user.email,
-        'Reset password',
-          templateboo({ link: resetLink }),
-    );
+    await sendMail(user.email, 'Reset password', templateboo({ link: resetLink }));
 }
 
 export async function resetPwd(password, token) {
@@ -135,4 +130,25 @@ export async function resetPwd(password, token) {
         }
         throw error;
     }
+}
+
+export async function loginOrRegister(email, name) {
+    let user = await User.findOne({ email });
+    if (user === null) {
+        //згенеруємо пкроль для корист.
+        const password = await bcrypt.hash(crypto.randomBytes(30).toString('base64'), 10);
+        //створимо нового користувая, якщо такого немає
+        user = await User.create({ name, email, password });
+    }
+
+  //видалимо стару сесію
+    await Session.deleteOne({ userId: user._id });
+ //створимо нову сесію
+    return Session.create({
+        userId: user._id,
+        accessToken: crypto.randomBytes(30).toString('base64'),
+        refreshToken: crypto.randomBytes(30).toString('base64'),
+        accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+        refreshTokenValidUntil: new Date(Date.now() + 30 * 60 * 60 * 1000),
+    });
 }

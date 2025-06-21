@@ -16,6 +16,10 @@ export const SendResetEmailSchema = Joi.object({
 });
 
 export const resetPwdSchema = Joi.object({
-  password: Joi.string().required(),
-  token: Joi.string().required(),
+  password: Joi.string().min(6).required(),
+  accessToken: Joi.string().required(),
+});
+
+export const confirmOAuthSchema = Joi.object({
+  code: Joi.string().required(),
 });

@@ -1,0 +1,9 @@
+type: object
+required:
+  - email
+properties:
+  email:
+    type: string
+    description: Contact's email
+    format: email
+    example: example@gmail.com
