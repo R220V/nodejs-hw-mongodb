@@ -1,0 +1,15 @@
+type: object
+required:
+  - password
+  - accessToken
+properties:
+  password:
+    type: string
+    description: New password for the user
+    format: password
+    example: 123456
+    minLength: 6
+  accessToken:
+    type: string
+    description: Password reset token
+    example: Z6sg7I0nwKpuHcrhg4LpseiM4i6qRHxypIWZPr5g

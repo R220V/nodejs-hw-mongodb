@@ -1,0 +1,36 @@
+tags:
+  - Auth
+summary: Confirm OAuth login with authorization code
+operationId: confirmOAuth
+description: Confirm OAuth login by sending authorization code from OAuth provider
+security: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: '../../../components/schemas/schemas.yaml#/confirmOAuthSchema'
+responses:
+  '200':
+    description: Successfully logged in with OAuth
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Login with google successfully
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+  '400':
+    description: Invalid authorization code supplied
+  '401':
+    $ref: '../../../components/responses/401.yaml'
