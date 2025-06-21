@@ -13,3 +13,5 @@ content:
         message:
           type: string
           example: Internal Server Error
+
+          

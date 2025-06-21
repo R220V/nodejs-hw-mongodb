@@ -22,16 +22,16 @@ export const setupServer = () => {
   
 const app = express();
 
+app.use(express.json());
+
+app.use(cookieParser());
+
+app.use(cors());
+
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(SWAGGER_DOCUMENT));
 
 //віддамо на фронт аватарку
 app.use("/photo", express.static(path.resolve("src","uploads","photo")));
-
-app.use(express.json());
-
-app.use(cookieParser());
- 
-app.use(cors());
 
 app.use(pinoHttp({
     transport: {
