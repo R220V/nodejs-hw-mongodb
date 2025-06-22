@@ -1,51 +1,62 @@
 tags:
   - Contacts
 summary: Get all contacts
+description: Pagination, sorting and filtering contacts
 operationId: getContacts
-description: Retrieve a list of all contacts
 security:
   - bearerAuth: []
+
 parameters:
+  - name: sortBy
+    in: query
+    description: Field to sort by
+    required: false
+    schema:
+      type: string
+      enum: [contact_id, name, createdAt]
+      default: contact_id
+
+  - name: sortOrder
+    in: query
+    description: Sort order
+    required: false
+    schema:
+      type: string
+      enum: [asc, desc]
+      default: asc
+
   - name: page
     in: query
     description: Page number for pagination
     required: false
     schema:
       type: integer
-      example: 1
-  - name: limit
+      minimum: 1
+      default: 1
+
+  - name: perPage
     in: query
-    description: Number of contacts per page
+    description: Number of items per page
     required: false
     schema:
       type: integer
-      example: 10
-  - name: isFavourite
+      minimum: 1
+      default: 10
+
+  - name: filter
     in: query
-    description: Filter by favourite contacts
-    required: false
-    schema:
-      type: boolean
-      example: true
-  - name: contactType
-    in: query
-    description: Filter by contact type
+    description: Filter by name, email, etc.
     required: false
     schema:
       type: string
-      enum: [work, home, personal]
-      example: work
+
 responses:
   '200':
-    description: List of contacts
+    description: Successfully found all contacts
     content:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
           properties:
             status:
               type: integer
@@ -56,7 +67,7 @@ responses:
             data:
               type: array
               items:
-                $ref: '../../components/schemas/contact.yaml'
+                 $ref: '../../components/schemas/contact.yaml'
   '401':
     $ref: '../../components/responses/401.yaml'
   '500':
