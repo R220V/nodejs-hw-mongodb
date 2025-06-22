@@ -680,12 +680,28 @@
             }
           },
           {
-            "name": "filter",
+            "name": "type",
             "in": "query",
-            "description": "Filter by name, email, etc.",
+            "description": "Filter by contact type",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "work",
+                "home",
+                "personal"
+              ],
+              "example": "personal"
+            }
+          },
+          {
+            "name": "isFavourite",
+            "in": "query",
+            "description": "Filter by favourite status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": true
             }
           }
         ],
@@ -970,7 +986,7 @@
           "userId"
         ],
         "properties": {
-          "id": {
+          "_id": {
             "type": "string",
             "example": "665f40e4a7fba25d5c4b3a80"
           },
