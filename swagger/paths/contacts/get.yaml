@@ -43,12 +43,23 @@ parameters:
       minimum: 1
       default: 10
 
-  - name: filter
+  - name: type
     in: query
-    description: Filter by name, email, etc.
+    description: Filter by contact type
     required: false
     schema:
       type: string
+      enum: [work, home, personal]
+      example: personal
+
+  - name: isFavourite
+    in: query
+    description: Filter by favourite status
+    required: false
+    schema:
+      type: boolean
+      example: true    
+
 
 responses:
   '200':
