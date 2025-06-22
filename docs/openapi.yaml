@@ -13,6 +13,7 @@ tags:
 
 servers:
   - url: 'http://127.0.0.1:8080'
+  - url:  'https://hw7-swagger-yiae.onrender.com'
 
 paths:
   /auth/register:
